@@ -1,0 +1,43 @@
+
+import streamlit as st
+import pandas as pd
+import joblib
+
+# Load the saved model and scaler
+model = joblib.load('xgboost_model.pkl')
+scaler = joblib.load('scaler.pkl')
+
+# Title of the app
+st.title('Water Quality Prediction App')
+st.write('Enter the water quality parameters to predict if the water is safe for consumption.')
+
+# Create input fields for all features
+# Based on the original DataFrame columns (excluding 'is_safe')
+feature_names = X.columns.tolist() # X is available from previous execution
+
+input_data = {}
+for feature in feature_names:
+    input_data[feature] = st.sidebar.number_input(f'Enter {feature}', value=0.0)
+
+# Convert input data to a DataFrame
+input_df = pd.DataFrame([input_data])
+
+# Scale the input data
+scaled_input = scaler.transform(input_df)
+
+# Make prediction
+if st.button('Predict Water Safety'):
+    prediction = model.predict(scaled_input)
+    prediction_proba = model.predict_proba(scaled_input)
+
+    st.subheader('Prediction Result:')
+    if prediction[0] == 1:
+        st.success('The water is predicted to be **SAFE** for consumption.')
+    else:
+        st.error('The water is predicted to be **UNSAFE** for consumption.')
+    
+    st.write(f"Confidence (Safe): {prediction_proba[0][1]:.2f}")
+    st.write(f"Confidence (Unsafe): {prediction_proba[0][0]:.2f}")
+
+st.sidebar.markdown('---')
+st.sidebar.markdown('Developed by Your Name/Organization')
