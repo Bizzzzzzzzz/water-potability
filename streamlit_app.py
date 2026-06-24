@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import joblib
@@ -12,8 +11,8 @@ st.title('Water Quality Prediction App')
 st.write('Enter the water quality parameters to predict if the water is safe for consumption.')
 
 # Create input fields for all features
-# Based on the original DataFrame columns (excluding 'is_safe')
-feature_names = X.columns.tolist() # X is available from previous execution
+# Get feature names from the scaler
+feature_names = scaler.feature_names_in_.tolist()
 
 input_data = {}
 for feature in feature_names:
